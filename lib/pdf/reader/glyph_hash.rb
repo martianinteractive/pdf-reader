@@ -72,17 +72,19 @@ class PDF::Reader
     # a text file supplied by Adobe at:
     # http://www.adobe.com/devnet/opentype/archives/glyphlist.txt
     def load_adobe_glyph_mapping
-      glyphs = {}
+      @glyphs ||= begin
+        glyphs = {}
 
-      RUBY_VERSION >= "1.9" ? mode = "r:BINARY" : mode = "r"
-      File.open(File.dirname(__FILE__) + "/glyphlist.txt", mode) do |f|
-        f.each do |l|
-          m, name, code = *l.match(/([0-9A-Za-z]+);([0-9A-F]{4})/)
-          glyphs[name.to_sym] = "0x#{code}".hex if name
+        RUBY_VERSION >= "1.9" ? mode = "r:BINARY" : mode = "r"
+        File.open(File.dirname(__FILE__) + "/glyphlist.txt", mode) do |f|
+          f.each do |l|
+            m, name, code = *l.match(/([0-9A-Za-z]+);([0-9A-F]{4})/)
+            glyphs[name.to_sym] = "0x#{code}".hex if name
+          end
         end
-      end
 
-      glyphs
+        glyphs
+      end
     end
 
   end
